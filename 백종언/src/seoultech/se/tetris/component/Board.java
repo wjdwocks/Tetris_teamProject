@@ -46,8 +46,16 @@ public class Board extends JFrame {
 	private SimpleAttributeSet styleSet; // 텍스트 스타일 설정하는 SimpleAttributeSet
 	private Timer timer; // 블록이 자동으로 아래로 떨어지게 하는 Timer
 	private Block curr; // 현재 움직이고 있는 블록
+	private Block nextcurr; // 다음 블럭
 	int x = 3; //Default Position. 현재 블록 위치
 	int y = 0; // 현재 블록 위치
+
+
+
+	int scores = 0; // 현재 스코어
+	int level = 0; // 현재 레벨
+	int lines = 0; // 현재 지워진 라인 수
+	int bricks = 0; // 생성된 벽돌의 개수
 	
 	private static final int initInterval = 1000; //블록이 자동으로 아래로 떨어지는 속도 제어 시간, 현재 1초
 	
@@ -75,7 +83,7 @@ public class Board extends JFrame {
 		
 		//Document default style.
 		styleSet = new SimpleAttributeSet(); // 스타일 설정을 위한 객체 생성
-		StyleConstants.setFontSize(styleSet, 23); // 폰트 크기를 18로 설정
+		StyleConstants.setFontSize(styleSet, 25); // 폰트 크기를 18로 설정
 		StyleConstants.setFontFamily(styleSet, "Consolas");// 폰트 종류를 mac은 Courier로 설정, window는 consolas로 설정
 		StyleConstants.setBold(styleSet, true); // 폰트를 굵게 설정
 		StyleConstants.setForeground(styleSet, Color.WHITE); // 폰트 색상을 흰색으로 설정
@@ -102,6 +110,8 @@ public class Board extends JFrame {
 		
 		//Create the first block and draw.
 		curr = getRandomBlock(); // 첫 번째 블록을 무작위로 선택
+		nextcurr = getRandomBlock(); // 다음 블록을 무작위로 선택
+
 		placeBlock(); //  선택된 블록을 배치합니다.
 		drawBoard(); // 보드를 그린다.
 		timer.start(); // 타이머 시작
@@ -135,6 +145,7 @@ public class Board extends JFrame {
 		StyledDocument doc = pane.getStyledDocument(); // 현재 JTextPane의 스타일이 적용된 문서를 가져옵니다.
 		SimpleAttributeSet styles = new SimpleAttributeSet(); // 스타일 속성을 설정하기 위한 객체를 생성합니다.
 		StyleConstants.setForeground(styles, curr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
+		StyleConstants.setForeground(styles, nextcurr.getColor()); // 현재 블록의 색상을 스타일 속성에 설정합니다.
 		for(int j=0; j<curr.height(); j++) { // 현재 블록의 높이만큼 반복합니다.
 			int rows = y+j == 0 ? 0 : y+j-1; // 블록이 배치될 행 위치를 계산합니다.
 			int offset = rows * (WIDTH+3) + x + 1; // JTextPane 내에서 블록이 시작될 위치를 계산합니다.
@@ -143,6 +154,7 @@ public class Board extends JFrame {
 				board[y+j][x+i] = curr.getShape(i, j); // 게임 보드 배열에 블록의 모양을 저장합니다.
 			}
 		}
+
 	}
 
 	// 게임보드에서 현재 블록의 위치를 "지우는"기능을 수행. 블록이 이동하거나 회전할 때 이전위치의 블록을 지우는 데 사용.
@@ -178,7 +190,8 @@ public class Board extends JFrame {
 			y++; // 블록을 아래로 이동
 		} else { // 이동할 수 없는 경우 (다른 블록에 닿거나 바닥에 닿은 경우)
 			placeBlock(); // 현재 위치에 블록을 고정시킵니다.
-			curr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
+			curr = nextcurr; // 다음블록을 현재 블록에 넣음
+			nextcurr = getRandomBlock(); // 새로운 블록을 무작위로 가져옵니다.
 			x = 3; // 새 블록의 시작 x 좌표를 설정합니다.
 			y = 0; // 새 블록의 시작 y 좌표를 설정합니다.
 		}
@@ -207,6 +220,8 @@ public class Board extends JFrame {
 
 		// 상단 경계선을 그립니다.
 		for (int t = 0; t < WIDTH + 2; t++) sb.append(BORDER_CHAR); // 보드의 너비만큼 상단에 경계 문자(BORDER_CHAR)를 추가합니다.
+		for (int i = 0; i < WIDTH; i++) sb.append(" ");// 게임부분과 NEXT블럭 부분 사이의 공백
+		sb.append("----NEXT----");// NEXT블럭의 상단경계선- 4개, NEXT, - 4개
 		sb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
 
 		// 게임 보드의 각 행을 순회합니다.
@@ -224,6 +239,27 @@ public class Board extends JFrame {
 			}
 
 			sb.append(BORDER_CHAR); // 각 행의 끝에 경계 문자를 추가합니다.
+
+			
+			if(i==1 || i==2) {
+				for (int j = 0; j < WIDTH+4; j++) sb.append(" "); // 5번째줄까지 게임부분과 NEXT블럭 부분의 공백
+				//NEXT 블럭 표시
+				for (int k = 0; k < nextcurr.width(); k++) {
+					if (nextcurr.width() == 4 && i ==2 ) // "OOOO"만 너비가 4이므로 따로 처리
+						break;
+					if (nextcurr.getShape(k, i-1) == 1) sb.append("O"); // 나머지 블럭들 표시
+					else sb.append(" ");
+				}
+
+
+			}
+			else if(i == 3){
+				for (int j = 0; j < WIDTH; j++) sb.append(" "); // 6번째줄 게임부분과 NEXT블럭 부분의 공백
+				sb.append("------------"); // 6번째줄에 NEXT의 하단 경계선 추가
+			}
+
+
+
 			sb.append("\n"); // 줄 바꿈을 추가하여 다음 행으로 넘어갑니다.
 		}
 
