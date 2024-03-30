@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Simple Testris/Simple Testris.iml" filepath="$PROJECT_DIR$/Simple Testris/Simple Testris.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Tetris_teamProject.iml" filepath="$PROJECT_DIR$/.idea/Tetris_teamProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/백종언/백종언.iml" filepath="$PROJECT_DIR$/백종언/백종언.iml" />
+      <module fileurl="file://$PROJECT_DIR$/정재찬/정재찬.iml" filepath="$PROJECT_DIR$/정재찬/정재찬.iml" />
+    </modules>
+  </component>
+</project>
