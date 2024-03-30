@@ -12,9 +12,8 @@ public class Block extends Rectangle {
     }
 
     public void draw(Graphics2D g2) {
-        int margin = 2;
-
         g2.setColor(c);
-        g2.fillRect(x + margin, y + margin, SIZE - (margin * 2), SIZE - (margin * 2));
+        g2.setFont(new Font("Courier", Font.BOLD, SIZE));
+        g2.drawString("0", x, y + SIZE - 5); // Adjust the y position to align the text in the center of the block
     }
 }

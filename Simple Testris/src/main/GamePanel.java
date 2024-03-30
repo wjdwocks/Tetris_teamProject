@@ -6,10 +6,11 @@ import java.awt.*;
 public class GamePanel extends JPanel implements Runnable {
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
+
     public static Sound music = new Sound();
     public static Sound se = new Sound(); //sound effect
     final int FPS = 60;
-    Thread gameThread;
+    Thread gameThread; // to run the game loop
     PlayManager pm;
 
 
@@ -38,6 +39,8 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run() {
         // Game loop
+        // You can study this part at https://www.youtube.com/watch?v=VpH33Uw-_0E
+
         double drawInterval = 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -56,8 +59,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    private void update() {
-        if (KeyHandler.pausePressed == false && pm.gameover == false) {
+    private void update() { // update the game
+        if (!KeyHandler.pausePressed && !pm.gameover) {
             pm.update();
         }
     }

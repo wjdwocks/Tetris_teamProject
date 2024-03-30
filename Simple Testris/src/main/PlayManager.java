@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PlayManager {
+    //PlayManager handles basic game elements such as minos, blocks, and the play area
 
+    //Main Game Area
     public static int left_x;
     public static int right_x;
     public static int top_y;
@@ -15,14 +17,15 @@ public class PlayManager {
     //Others
     public static int drop_Interval = 60; // mino drops in every 60frames
     public static ArrayList<Block> staticBlocks = new ArrayList<>();
-    //Main Play Area
-    final int WIDTH = 360;
+    final int WIDTH = 300;
     final int HEIGHT = 600;
+
     //Mino
     final int MINO_START_X;
     final int MINO_START_Y;
     final int NEXTMINO_X;
     final int NEXTMINO_Y;
+
     //Effect
     public boolean effectCounteron;
     Mino currentMino;
@@ -39,13 +42,12 @@ public class PlayManager {
     public PlayManager() {
         //Main Play Area Frame
 
-        left_x = (GamePanel.WIDTH / 2) - (WIDTH / 2); //1280/2-360/2=460
+        left_x = (GamePanel.WIDTH / 2) - (WIDTH / 2); // Adjusted for new width
         right_x = left_x + WIDTH;
         top_y = 50;
         bottom_y = top_y + HEIGHT;
-        MINO_START_X = left_x + (WIDTH / 2) - Block.SIZE;
+        MINO_START_X = left_x + (WIDTH / 2) - Block.SIZE; // Adjusted for new width
         MINO_START_Y = top_y + Block.SIZE;
-
         NEXTMINO_X = right_x + 175;
         NEXTMINO_Y = top_y + 500;
 
@@ -77,7 +79,7 @@ public class PlayManager {
 
     public void update() {
         // Check if he currentMino is active
-        if (currentMino.active == false) {
+        if (!currentMino.active) {
             // if the mino is not active, put it into the staticBlocks
             staticBlocks.add(currentMino.b[0]);
             staticBlocks.add(currentMino.b[1]);
@@ -110,6 +112,7 @@ public class PlayManager {
 
 
     private void checkDelete() {
+        int blocksPerLine = WIDTH / Block.SIZE; // Blocks per line에 맞게 수정될수있도록 코드 추가
         int x = left_x;
         int y = top_y;
         int blockCount = 0;
@@ -125,10 +128,7 @@ public class PlayManager {
             }
             x += Block.SIZE;
             if (x == right_x) {
-                // if the blockCount hit 12, that means the current y line is all filled with blocks
-                // so we can delete them
-
-                if (blockCount == 12) {
+                if (blockCount == blocksPerLine) {
                     effectCounteron = true;
                     effectY.add(y);
 

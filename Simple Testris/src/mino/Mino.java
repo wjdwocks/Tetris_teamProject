@@ -7,8 +7,8 @@ import main.PlayManager;
 import java.awt.*;
 
 public class Mino {
-    public Block b[] = new Block[4];
-    public Block tempB[] = new Block[4];
+    public Block[] b = new Block[4];
+    public Block[] tempB = new Block[4];
     public int direction = 1; //There are 4 directions (1,2,3,4)
     public boolean active = true;
     public boolean deactivating;
@@ -48,7 +48,7 @@ public class Mino {
 
     public void updateXY(int direction) {
         checkRotationCollision();
-        if (leftCollison == false && rightCollison == false && bottomCollison == false) {
+        if (!leftCollison && !rightCollison && !bottomCollison) {
             this.direction = direction;
             b[0].x = tempB[0].x;
             b[0].y = tempB[0].y;
@@ -86,18 +86,21 @@ public class Mino {
         for (int i = 0; i < b.length; i++) {
             if (b[i].x == PlayManager.left_x) {
                 leftCollison = true;
+                break;
             }
         }
         // Right wall Collisions
         for (int i = 0; i < b.length; i++) {
             if (b[i].x + Block.SIZE == PlayManager.right_x) {
                 rightCollison = true;
+                break;
             }
         }
         // Bottom wall Collisions
         for (int i = 0; i < b.length; i++) {
             if (b[i].y + Block.SIZE == PlayManager.bottom_y) {
                 bottomCollison = true;
+                break;
             }
         }
     }
@@ -115,18 +118,21 @@ public class Mino {
         for (int i = 0; i < b.length; i++) {
             if (tempB[i].x == PlayManager.left_x) {
                 leftCollison = true;
+                break;
             }
         }
         // Right wall Collisions
         for (int i = 0; i < b.length; i++) {
             if (tempB[i].x + Block.SIZE > PlayManager.right_x) {
                 rightCollison = true;
+                break;
             }
         }
         // Bottom wall Collisions
         for (int i = 0; i < b.length; i++) {
             if (tempB[i].y + Block.SIZE > PlayManager.bottom_y) {
                 bottomCollison = true;
+                break;
             }
         }
 
@@ -141,6 +147,7 @@ public class Mino {
             for (int ii = 0; ii < b.length; ii++) {
                 if (b[ii].x == targetX && b[ii].y + Block.SIZE == targetY) {
                     bottomCollison = true;
+                    break;
                 }
             }
 
@@ -148,12 +155,14 @@ public class Mino {
             for (int ii = 0; ii < b.length; ii++) {
                 if (b[ii].x - Block.SIZE == targetX && b[ii].y == targetY) {
                     leftCollison = true;
+                    break;
                 }
             }
             //check right collision
             for (int ii = 0; ii < b.length; ii++) {
                 if (b[ii].x + Block.SIZE == targetX && b[ii].y == targetY) {
                     rightCollison = true;
+                    break;
                 }
             }
 
@@ -190,7 +199,7 @@ public class Mino {
 
         if (KeyHandler.downPressed) {
             // If the mino's bottom is not hitting, it can go down
-            if (bottomCollison == false) {
+            if (!bottomCollison) {
                 b[0].y += Block.SIZE;
                 b[1].y += Block.SIZE;
                 b[2].y += Block.SIZE;
@@ -201,7 +210,7 @@ public class Mino {
             KeyHandler.downPressed = false;
         }
         if (KeyHandler.leftPressed) {
-            if (leftCollison == false) {
+            if (!leftCollison) {
                 b[0].x -= Block.SIZE;
                 b[1].x -= Block.SIZE;
                 b[2].x -= Block.SIZE;
@@ -210,7 +219,7 @@ public class Mino {
             KeyHandler.leftPressed = false;
         }
         if (KeyHandler.rightPressed) {
-            if (rightCollison == false) {
+            if (!rightCollison) {
                 b[0].x += Block.SIZE;
                 b[1].x += Block.SIZE;
                 b[2].x += Block.SIZE;
@@ -219,7 +228,7 @@ public class Mino {
             KeyHandler.rightPressed = false;
         }
         if (bottomCollison) {
-            if (deactivating == false) {
+            if (!deactivating) {
                 GamePanel.se.play(4, false);
             }
             deactivating = true;
@@ -237,11 +246,9 @@ public class Mino {
     }
 
     public void draw(Graphics2D g2) {
-        int margin = 2;
-        g2.setColor(b[0].c);
-        g2.fillRect(b[0].x + margin, b[0].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
-        g2.fillRect(b[1].x + margin, b[1].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
-        g2.fillRect(b[2].x + margin, b[2].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
-        g2.fillRect(b[3].x + margin, b[3].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
+        b[0].draw(g2);
+        b[1].draw(g2);
+        b[2].draw(g2);
+        b[3].draw(g2);
     }
 }

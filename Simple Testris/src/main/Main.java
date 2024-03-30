@@ -9,9 +9,9 @@ public class Main {
         window.setResizable(false);
 
         // Add GamePanel to the window
-        GamePanel gp = new GamePanel();
-        window.add(gp);
-        window.pack();
+        GamePanel gp = new GamePanel(); // create a GamePanel(=JPanel)
+        window.add(gp); // add the GamePanel to the window(=JFrame)
+        window.pack(); // resize the window to fit the GamePanel
 
         window.setLocationRelativeTo(null);
         window.setVisible(true);
