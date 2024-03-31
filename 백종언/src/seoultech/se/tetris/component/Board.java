@@ -53,6 +53,7 @@ public class Board extends JFrame {
 
 
 	int scores = 0; // 현재 스코어
+	int point = 1; // 한칸 떨어질때 얻는 점수
 	int level = 0; // 현재 레벨
 	int lines = 0; // 현재 지워진 라인 수
 	int bricks = 0; // 생성된 벽돌의 개수
@@ -100,6 +101,7 @@ public class Board extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				moveDown(); // 블록 아래로 이동
 				drawBoard(); // 보드 그리기
+				setLevel();
 			}
 		});
 
@@ -191,6 +193,8 @@ public class Board extends JFrame {
 		eraseCurr(); // 현재 블록의 위치를 게임 보드에서 지웁니다.
 		if (canMoveDown()) { // 아래로 이동할 수 있는 경우
 			y++; // 블록을 아래로 이동
+			scores+=point;
+			setLevel();
 
 		} else { // 이동할 수 없는 경우 (다른 블록에 닿거나 바닥에 닿은 경우)
 			placeBlock(); // 현재 위치에 블록을 고정시킵니다.
@@ -244,7 +248,7 @@ public class Board extends JFrame {
 
 
 			sb.append("\n"); // 줄 바꿈을 추가하여 다음 행으로 넘어갑니다.
-			drawNextBlock();
+			NextBlocknscore();// next블럭 및 점수 표시
 		}
 
 		// 하단 경계선을 그립니다.
@@ -297,6 +301,8 @@ public class Board extends JFrame {
 		}
 	}
 
+	
+	// Next블럭을 그리기 위한 텍스트패널 생성
 	public void nextBlockBoard() {
 
 		nextpane = new JTextPane(); // 텍스트 패널 생성
@@ -313,35 +319,42 @@ public class Board extends JFrame {
 		this.getContentPane().add(nextpane, BorderLayout.EAST); // 텍스트 패널을 창의 중앙에 추가.this는 Board클래스의 인스턴스를 지칭
 	}
 
-	public void drawNextBlock(){
+	
+
+	
+	// 다음블럭표시 및 점수부분을 담당하는 함수, drawBoard 할 때 호출됨.
+	public void NextBlocknscore(){
 		StringBuffer nb = new StringBuffer(); // 문자열을 효율적으로 더하기 위한 StringBuffer 인스턴스 생성
 
 		// 상단 경계선을 그립니다.
-		nb.append("    NEXT    ");// NEXT블럭의 상단경계선- 4개, NEXT, - 4개
+		nb.append("    NEXT    ");// NEXT블럭의 상단경계선
 		nb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
 		nb.append("\n"); // 줄 바꿈을 추가하여 경계선 다음에 내용이 오도록 합니다.
 
 
 
-
-				for (int i =0; i<2; i++) {
+		// 다음블럭을 처리하는 로직
+		for (int i =0; i<2; i++) {
 					//NEXT 블럭 표시
-					for (int k = 0; k < nextcurr.width(); k++) {
-						if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
-							break;
-						if (nextcurr.getShape(k, i) == 1) nb.append("O"); // 나머지 블럭들 표시
-						else nb.append(" ");
-					}
-					nb.append("\n");
-				}
+			for (int k = 0; k < nextcurr.width(); k++) {
+				if (nextcurr.width() == 4 && i == 1) // "OOOO"만 너비가 4이므로 따로 처리
+					break;
+				if (nextcurr.getShape(k, i) == 1) nb.append("O"); // 나머지 블럭들 표시
+				else nb.append(" ");
+			}
+			nb.append("\n");
+		}
 
+		//공백추가
 		for (int i = 0 ; i<7; i++){
 			nb.append("\n");
 		}
-		nb.append("BLOCK : 115\n\n");
-		nb.append("LINES :  26\n\n");
-		nb.append("SCORE : 740\n\n");
-		nb.append("LEVEL :  3 \n\n");
+
+		// 블럭,라인,점수,레벨 표시
+		nb.append(String.format("BLOCK : %3d\n\n", bricks));
+		nb.append(String.format("LINES : %3d\n\n", lines));
+		nb.append(String.format("SCORE : %3d\n\n", scores));
+		nb.append(String.format("LEVEL : %3d\n\n", level));
 
 		nextpane.setText(nb.toString()); // StringBuffer에 저장된 문자열을 JTextPane에 설정합니다.
 
@@ -349,6 +362,30 @@ public class Board extends JFrame {
 		doc.setParagraphAttributes(0, doc.getLength(), styleSet, false); // 가져온 문서에 스타일 속성을 적용합니다.
 		nextpane.setStyledDocument(doc); // 스타일이 적용된 문서를 다시 JTextPane에 설정
 	}
+
+
+
+	//일정 점수 도달하면 레벨+, 속도+, 얻는 점수+ 조정하는 함수, moveDown(), TimerAction에 호출됨
+	public void setLevel(){
+		
+		//50점이상시 레벨,속도,점수조정
+		if(scores == 50){
+			level++;
+			point++;
+			timer.stop();
+			int newInterval = (int)(initInterval *0.5);
+			timer.setDelay(newInterval);
+			timer.start();
+		}
+	}
+
+
+
+
+
+
+
+
 
 
 
