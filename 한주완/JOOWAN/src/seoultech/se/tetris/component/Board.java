@@ -61,13 +61,13 @@ public class Board extends JFrame {
         pane.setPreferredSize(new Dimension(230, 200)); // 가로 300, 세로 200의 크기로 설정
 
 
-// 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
+        // 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
         CompoundBorder newBorder = new CompoundBorder(border, innerPadding);
 
-// 텍스트 패널에 새로운 테두리 설정
+        // 텍스트 패널에 새로운 테두리 설정
         pane.setBorder(newBorder);
-        this.getContentPane().add(pane, BorderLayout.WEST); // 텍스트 패널을 창의 중앙에 추가.this는 Board클래스의 인스턴스를 지칭
-        nextBlockBoard();
+        this.getContentPane().add(pane, BorderLayout.WEST); // 텍스트 패널을 창의 west에 추가.this는 Board클래스의 인스턴스를 지칭
+        sideBoard(); // textpane인 sideBoard 생성
 
         //Document default style.
         styleSet = new SimpleAttributeSet(); // 스타일 설정을 위한 객체 생성
@@ -334,21 +334,25 @@ public class Board extends JFrame {
     }
 
 
-    public void nextBlockBoard() {
+    public void sideBoard() {
         // Next블럭을 그리기 위한 텍스트패널 생성
 
         nextpane = new JTextPane(); // 텍스트 패널 생성
         nextpane.setEditable(false); // 텍스트 패널 편집 불가하도록 설정
-        nextpane.setBackground(Color.BLACK); // 텍스트 패널의 배경색을 검은색으로 설정
+        nextpane.setBackground(Color.ORANGE); // 텍스트 패널의 배경색을 검은색으로 설정
+
         CompoundBorder border = BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.BLACK, 10),
-                BorderFactory.createLineBorder(Color.BLACK, 5)); // 복합 테두리 생성
+                BorderFactory.createLineBorder(Color.GRAY, 10),
+                BorderFactory.createLineBorder(Color.DARK_GRAY, 5)); // 복합 테두리 생성
         nextpane.setBorder(border); // 텍스트 패널에 테두리를 설정
-
         nextpane.setPreferredSize(new Dimension(225, 50)); // 가로 300, 세로 200의 크기로 설정
-
-
-        this.getContentPane().add(nextpane, BorderLayout.EAST); // 텍스트 패널을 창의 중앙에 추가.this는 Board클래스의 인스턴스를 지칭
+        Border innerPadding = new EmptyBorder(0, 0, 0, 0); // 상단, 왼쪽, 하단, 오른쪽 여백 설정
+        nextpane.setPreferredSize(new Dimension(230, 200)); // 가로 300, 세로 200의 크기로 설정
+        // 기존 복합 테두리와 내부 여백을 결합한 새로운 복합 테두리 생성
+        CompoundBorder newBorder = new CompoundBorder(border, innerPadding);
+        // 텍스트 패널에 새로운 테두리 설정
+        nextpane.setBorder(newBorder);
+        this.getContentPane().add(nextpane, BorderLayout.EAST); // 텍스트 패널을 창의 EAST에 추가.this는 Board클래스의 인스턴스를 지칭
     }
 
     // 다음블럭표시 및 점수부분을 담당하는 함수, drawBoard 할 때 호출됨.
